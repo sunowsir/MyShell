@@ -10,7 +10,7 @@ target_path=`pwd`
 num=0
 search_dir="no"
 
-#解析参数
+# storage parameters
 for arg in $@ 
 do
     parameter[num]=$arg
@@ -21,6 +21,7 @@ if [[ $num == "0"  ]];then
     exit;
 fi
 
+# parsing parameters
 for((i=0;i<num;i++));
 do
     case ${parameter[i]} in
@@ -41,17 +42,17 @@ do
     esac
 done
 
-#实现功能
+
+#achieve function
 
 
-#跳转到目标路径下
 cd $target_path
 
 echo
 echo "当前处于 "$target_path" 路径下:"
 echo 
 
-#查找文件夹个数
+#count of number of dir
 if [[ $search_dir == "yes" ]];then
 
     dir_num=`ls -al 2> /dev/null | grep "^d" | wc -l`
@@ -68,7 +69,7 @@ if [[ $search_dir == "yes" ]];then
     fi
 fi
 
-#匹配指定含有指定字符串的文件
+#count of number of files matching string
 if [[ "x"$search_name != "x" ]];then
     
     cd $target_path
@@ -86,7 +87,7 @@ if [[ "x"$search_name != "x" ]];then
     fi
 fi
 
-#查找指定后缀的文件
+#count of number of specified suffix files 
 if [[ "x"$search_suffix != "x"  ]];then
     
     suffix=`echo $search_suffix | cut -d "." -f2`
