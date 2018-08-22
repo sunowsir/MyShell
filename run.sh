@@ -1,4 +1,5 @@
 #!/bin/bash
+source $HOME/.bashrc
 
 num=0
 useshells="bash"
@@ -79,16 +80,18 @@ case $suffix in
         gcc -Wall $fname
         echo "------------------"
         (time ./a.out) 2> $compath/run.info
+        echo "------------------"
     ;;
     "cpp")
         echo "Compiling ... "
         g++ -std=c++11 -Wall $fname 
         echo "------------------"
         (time ./a.out) 2> $compath/run.info
-
+        echo "------------------"
     ;;
     "py")
         (time python2.7 $fname) 2> $compath/run.info
+        echo "------------------"
     ;;
     "sh")
         (time $useshells  ./$fname) 2> $compath/run.info
@@ -103,10 +106,8 @@ case $suffix in
 
 esac
 
-echo "------------------"
-
 lines=`cat $compath/run.info | wc -l`
-((lines=$lines-4))
+((lines-=-4))
 line=0
 
 cat $compath/run.info | while read oneline
@@ -115,7 +116,7 @@ do
     if [[ "$line" -lt "$lines" ]];then
         echo $oneline
     fi
-    ((line=$line+1))
+    ((line++))
 
 done
 
