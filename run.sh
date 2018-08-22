@@ -1,15 +1,17 @@
 #!/bin/bash
 
 num=0
+useshells="bash"
+useweb="chromium"
 judgeshow=0
 tarpath=`pwd`
-compath=/home/sunowsir/Command
+compath="$HOME/Command"
 
 for arg in $@
 do
 
     parameter[$num]=$arg
-    ((num=$num+1))
+    ((num++))
 
 done
 
@@ -18,12 +20,25 @@ do
 
     case ${parameter[$i]} in
 
-        "-p" | "-path")
-            tarpath=${parameter[`expr "$i+1"`]}
-            ((i=$i+1))
+        "-p" | "--path")
+            ((i++))
+            tarpath=${parameter[$i]}
         ;;
-        "-t" | "-time")
+        "-t" | "--time")
             judgeshow=1
+        ;;
+        "-u" | "--use")
+            ((i++))
+            useshells=${parameter[$i]}
+        ;;
+        "-w" | "--web")
+            ((i++))
+            useweb=${parameter[$i]}
+        ;;
+        "-help" | "--help")
+            echo "run [-p/--path + ... , -t/-time , -u/-use + ... , -w/--web + ... , -help/--help]"
+            echo "-p / --path : "
+            exit;
         ;;
         *)
             fname=${parameter[$i]}
@@ -55,13 +70,13 @@ case $suffix in
 
     "c")
         echo "Compiling ... "
-        gcc $fname
+        gcc -Wall $fname
         echo "------------------"
         (time ./a.out) 2> $compath/run.info
     ;;
     "cpp")
         echo "Compiling ... "
-        g++ -std=c++11 $fname 
+        g++ -std=c++11 -Wall $fname 
         echo "------------------"
         (time ./a.out) 2> $compath/run.info
 
@@ -70,13 +85,14 @@ case $suffix in
         (time python2.7 $fname) 2> $compath/run.info
     ;;
     "sh")
-        (time ./$fname) 2> $compath/run.info
+        (time $useshells  ./$fname) 2> $compath/run.info
     ;;
     "html")
-        chromium $fname
+        $useweb $fname
     ;;
     "*")
-        echo "对不起!\n暂时无法识别"$suffix"类型文件\n"
+        echo "暂时无法识别"$suffix"类型文件"
+        exit 1
     ;;
 
 esac
