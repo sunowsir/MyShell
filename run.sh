@@ -36,8 +36,13 @@ do
             useweb=${parameter[$i]}
         ;;
         "-help" | "--help")
-            echo "run [-p/--path + ... , -t/-time , -u/-use + ... , -w/--web + ... , -help/--help]"
-            echo "-p / --path : "
+            echo "Note: This script only works for single file code running a no link process."
+            echo "run [-p/--path + ... , -t/--time , -u/--use + ... , -w/--web + ... , -help/--help] <filename>"
+            echo "-p / --path :    run the file under the development path."
+            echo "-t / --time :    display runtime infomation."
+            echo "-w / --web :     when run an HTML code, open it with the specified browser."
+            echo "-u / -use :      when run an linux script code, open it with the specified shell script language"
+            echo "- help / --help: Git help "
             exit;
         ;;
         *)
@@ -58,6 +63,7 @@ search=`ls -al | grep "$fname"`
 
 if [[ "x"$search == "x" ]];then
     echo $fname"文件不存在"
+    $useshells $compath/run.sh -help
     exit;
 fi
 
