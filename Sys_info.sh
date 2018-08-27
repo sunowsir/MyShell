@@ -6,10 +6,12 @@ nowdate=`date +"%Y-%m-%d__%H:%M:%S"`
 os_v=`cat /etc/issue | awk '{printf("%s_%s", $1, $2);}'`
 # 内核版本
 ker_v=`uname -r`
-# 运行时间
-runtimes=`uptime -p | tr -s " " "\n" | awk '{printf("_%s", $1)}'`
+# 运行时间和负载信息
+run_and_load=`uptime -p | tr -s " " "\n" | awk '{printf("_%s", $1)}'``cat /proc/loadavg | awk '{ printf(" %s %s %s", $1, $2, $3); }'`
+
 # 负载信息
-load_info=`uptime | awk '{printf ("%s %s %s", $(NF - 2), $(NF - 1), $NF)}' | tr -s "," " "`
+#load_info=`uptime | awk '{printf ("%s %s %s", $(NF - 2), $(NF - 1), $NF)}' | tr -s "," " "`
+
 
 
 disk_total=`df -m | grep "^/dev/" | awk 'BEGIN{t_num=0; u_num = 0}{if (NR > 1) {t_num = t_num + $2; u_num += $3 }}END{printf ("%d:%d", t_num, u_num)}'`
@@ -70,4 +72,4 @@ fi
 #主机名
 hname=`hostname`
 
-echo "$nowdate $hname $os_v $ker_v $runtimes $load_info ${disk_total}M ${per_disk_used}% ${mem_total}M ${per_memo}% ${cpu_temp} ${disk_warn} ${memo_warn} ${cpu_warn}"
+echo "$nowdate $hname $os_v $ker_v ${run_and_load} ${disk_total}M ${per_disk_used}% ${mem_total}M ${per_memo}% ${cpu_temp} ${disk_warn} ${memo_warn} ${cpu_warn}"
