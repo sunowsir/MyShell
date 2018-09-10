@@ -1,0 +1,5 @@
+#!/bin/bash
+
+outinfo=$(w | tail -1 | awk -v time=`date +"%Y-%m-%d_"` '{if ($3 != ":0") {printf("%s %s %s %s%s", $1, $2, $3, time, $4); } }')
+
+/etc/ssh/sendmail_test.py $outinfo
