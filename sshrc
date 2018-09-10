@@ -1,0 +1,19 @@
+#!/bin/bash
+
+outinfo=$(w | tail -1 | awk -v time=`date +"%Y-%m-%d_"` '{
+    if ($3 != ":0") {
+        printf("%s %s %s %s%s", $1, $2, $3, time, $4); 
+    }
+}')
+
+loger_ip=$(echo $outinfo | awk '{print $3}')
+
+# display IP numbers in numbers-and-dots notation
+loger=$(cat /etc/hosts | grep $loger_ip | awk '{print $2}')
+
+outinfo=$(echo $outinfo | awk -v loger=$loger '{ 
+    printf("%s %s %s %s %s", loger, $3, $1, $2, $4); 
+}')
+
+
+/etc/ssh/sendmail_test.py $outinfo

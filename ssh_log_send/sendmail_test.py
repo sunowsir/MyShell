@@ -14,20 +14,28 @@ mail_user = 'xxx@xxx.com' # 发送者邮箱
 mail_pass = 'xxx'# 发送者邮箱密码
 
 if len(sys.argv) > 1 :
+    
+    if sys.argv[1] == "" : 
+        sys.argv[1] = "Unidentified person"
+
     mail_word = sys.argv[1]
     mail_word = """
     有人登录您的电脑，具体信息如下：
-    登录用户："""
+    登录人员："""
     mail_word = mail_word + sys.argv[1]
     mail_word = mail_word + """
-    登录终端："""
+    登录者IP："""
     mail_word = mail_word + sys.argv[2]
     mail_word = mail_word + """
-    登陆者IP："""
+    登陆用户："""
     mail_word = mail_word + sys.argv[3]
     mail_word = mail_word + """
-    登录时间："""
+    登录终端："""
     mail_word = mail_word + sys.argv[4]
+    mail_word = mail_word + """
+    登录时间："""
+    mail_word = mail_word + sys.argv[5]
+
 else :
     mail_word = 'Error send ! Please check the script !'
 
