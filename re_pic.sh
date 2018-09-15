@@ -1,21 +1,25 @@
 #!/bin/bash
 
-source_url=$1
-save_path=$2
 
-if [[ $1 == "--help" ]];then 
+if [[ $1 == '--help' ]]; then 
     echo "you need install wget and curl before use the script. "
     echo 
     echo "usage:     ./re_pic.sh [url] [path]"
     echo 
-    echo "url:       Given a URL, crawl the image from that URL."
+    echo "    url:       Given a URL, crawl the image from that URL, Special characters in the URL need to be ‘\\’ for escaping"
     echo 
-    echo "path:      Given a path to save the doenloaded image."
+    echo "    path:      Given a path to save the doenloaded image."
     echo 
     echo "Statement: Please beware of copyright issues, everything related to image copyright issues is not related to this script."
     echo 
     exit 0
 fi
+
+source_url=$1
+save_path=$2
+suffix=$3
+search_name=$4
+
 
 nowpath=$(cd $(dirname "$0") && pwd)
 
@@ -32,7 +36,7 @@ if [[ ! -f web_code ]];then
 fi
 
 # Get the web page code and save in web_code.
-curl ${source_url} 1> web_code 
+curl ${source_url} 1> ./web_code 
 
 echo '```'
 echo 
@@ -41,31 +45,49 @@ echo
 
 wait
 
+if [[ "x"${suffix} == "x" ]];then
+    suffix='**'
+fi
+
+if [[ "x"${search_name} == "x" ]];then
+    search_name='**'
+fi
+
 # Get download images url.
-urls=$(cat web_code | grep -Eo '<img\s*[^>]*' | sed 's/<img\s//g' | sed 's/\/$//g' | sed 's/\<\S*="//g' | grep -Eo 'http[^"]*' | sort -u)
+urls=$(cat ./web_code | grep -Eo '<img\s*[^>]*' | sed 's/<img\s*\<//g' | tr -s '"' '\n' | grep -Eo '(^http\S*)|(^//\S*)' | sed 's/\<(https:\/\/)|(\/\/)//g' | grep "${suffix}$"  | grep "${search_name}"  | sort -u)
 
 # Download images.
-for img_url in ${urls}
+for img_url in `echo "${urls}" | tr -s " " "\n"`
 do
+
+    if [[ "x"$(echo "${source_url}" | grep "bing") != "x" ]];then
+
+        img_url="cn.bing.com${img_url}"
+    fi
+
+    if [[ "x"$(echo "${img_url}" | grep "^https:") == "x" ]];then
+        img_url="https:${img_url}"
+    fi
     img_name=$(basename ${img_url})
     
     if [[ $(ls -a ${save_path} | grep -w ${img_name}) == $img_name ]];then
         echo "Duplicate name, spip."
+        echo 
         continue
     fi
-    
-    echo "Downloading: [ ${img_name} ] -> [ ${save_path} ]"
-    wget -P ${save_path} ${img_url} > /dev/null 2>&1
+    wget -P ${save_path} ${img_url} 1> /dev/null
 
     wait
-    
-    echo "Download Completed."
+    echo
+
 done
 
 echo 
 echo "Completed."
 echo 
 
-rm -rf ./web_code
+# rm -rf ./web_code
 
 exit 0
+
+
