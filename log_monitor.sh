@@ -1,31 +1,34 @@
 #!/bin/bash
 
-if [[ ! -e "logm.info" ]];then
-    info=`last -d  | grep "sunowsir" | grep -v "tty" | head -1 | tr -s ' ' ':'` 
-    echo $info > /home/sunowsir/Command/logm.info
+#newloger=$(w | tail -1 | awk -v logtime=$(date +":%S") '{printf("%s|%s%s", $3, $4, logtime);}')
+newloger=$(last | head -1 | awk -v num=$(who | wc -l) '{printf("%s|%s|%s", $3, $7, num);}')
+lastloger=`cat $HOME/Command/logm.info | tail -1`
+
+if [[ ! -e "$HOME/Command/logm.info" ]];then
+    echo ${newloger} > $HOME/Command/logm.info
 fi
 
+case $1 in
+    "login")
 
-while true;
-do
+        logip=$(echo "${newloger}" | cut -d '|' -f 1)
+        logtime=$(echo "${newloger}" | cut -d '|' -f 2)
+        lognum=$(echo "${newloger}" | cut -d '|' -f 3)
+        last_lognum=$(echo "${lastloger}" | cut -d '|' -f 3)
 
-    newloger=`last -d  | grep "sunowsir" | grep -v "tty" | head -1 | tr -s ' ' ':'`
-    lastloger=`cat /home/sunowsir/Command/logm.info | tail -1`
-    if [[ $newloger != $lastloger ]];then
-
-        loger=`last -d  | grep "sunowsir" | grep -v "tty" | head -1 | tr -s ' ' ':' | cut -d ':' -f3`
-    
-        if [[ $loger == "bogon" ]];then
-            loger=`last | grep "sunowsir" | grep -v "tty" | head -1 | tr -s ' ' ':' | cut -d ':' -f3`
+        if [[ ${lognum} != ${last_lognum} && ${logip} != ":0" ]];then
+            notify-send -i gtk-dialog-info "${logip} logged in your computer at ${logtime}"
         fi
+        echo ${newloger} > $HOME/Command/logm.info
+    ;;
+    "logout")
+        last_logip=$(echo "${lastloger}" | cut -d '|' -f 1)
+        notify-send -i gtk-dialog-info "${last_logip} logged out at $(date +"%H:%M:%S")"
+        echo $(echo "${newloger}" | awk -F '|' '
+        {
+            printf("%s|%s|%d", $1, $2, $3 - 1);
+        }
+        ') > $HOME/Command/logm.info
+    ;;
+esac
 
-
-        #echo $loger 刚刚登录您的电脑
-        notify-send -i gtk-dialog-info "$loger 刚刚登录您的电脑"
-        
-        info=`last -d  | grep "sunowsir" | grep -v "tty" | head -1 | tr -s ' ' ':'` 
-        echo $info > /home/sunowsir/Command/logm.info
-    
-    fi
-
-done
