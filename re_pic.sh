@@ -54,20 +54,30 @@ if [[ "x"${search_name} == "x" ]];then
 fi
 
 # Get download images url.
-urls=$(cat ./web_code | grep -Eo '<img\s*[^>]*' | sed 's/<img\s*\<//g' | tr -s '"' '\n' | grep -Eo '(^http\S*)|(^//\S*)' | sed 's/\<(https:\/\/)|(\/\/)//g' | grep "${suffix}$"  | grep "${search_name}"  | sort -u)
+urls=$(cat ./web_code | grep -Eo '<img\s*[^>]*' | tr -s '"' '\n' | grep -Eo '((/\S*)+\.(\w\w\w))|(^http\S+)|(^\/\/)' | sed 's/http://g' | sed 's/^https://g' | sed 's/^\/\///g' | grep "${suffix}$"  | grep "${search_name}"  | sort -u)
 
 # Download images.
 for img_url in `echo "${urls}" | tr -s " " "\n"`
 do
 
+    img_url=$(echo "${img_url}" | sed 's/\<https//g')
+    img_url=$(echo "${img_url}" | sed 's/\<http//g')
+    if [[ $(echo "${img_url}" | grep "^:") ]];
+    then
+        img_url=$(echo "${img_url}" | sed 's/://g')
+    fi
+
+    img_url=$(echo "${img_url}" | sed 's/\/\/\<//g')
+
     if [[ "x"$(echo "${source_url}" | grep "bing") != "x" ]];then
 
-        img_url="cn.bing.com${img_url}"
+        img_url="cn.bing.com/${img_url}"
     fi
 
     if [[ "x"$(echo "${img_url}" | grep "^https:") == "x" ]];then
-        img_url="https:${img_url}"
+        img_url="https://${img_url}"
     fi
+
     img_name=$(basename ${img_url})
     
     if [[ $(ls -a ${save_path} | grep -w ${img_name}) == $img_name ]];then
