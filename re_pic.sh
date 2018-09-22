@@ -36,7 +36,7 @@ if [[ ! -f web_code ]];then
 fi
 
 # Get the web page code and save in web_code.
-curl ${source_url} 1> ./web_code 
+curl --connect-timeout <${5}>  ${source_url} 1> ./web_code 
 
 echo '```'
 echo 
