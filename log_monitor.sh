@@ -1,6 +1,10 @@
 #!/bin/bash
 
-newloger=$(last | head -1 | awk -v num=$(who | wc -l) '{printf("%s|%s|%s", $3, $7, num);}')
+newloger=$(last | head -1 | awk -v num=$(who | wc -l) '
+{
+    printf("%s|%s|%s", $3, $7, num);
+}
+')
 lastloger=`cat $HOME/Command/logm.info | tail -1`
 
 if [[ ! -e "$HOME/Command/logm.info" ]];then
@@ -9,7 +13,6 @@ fi
 
 case $1 in
     "login")
-
         logip=$(echo "${newloger}" | cut -d '|' -f 1)
         logtime=$(echo "${newloger}" | cut -d '|' -f 2)
         lognum=$(echo "${newloger}" | cut -d '|' -f 3)
