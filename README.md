@@ -32,8 +32,9 @@
   * cd $HOME
   * mkdir Command
   * 把该脚本拷贝到Command目录下
-  * 在`.bashrc` 中添加:`bash $HOME/Command/log_monitor.sh login` (其他shell请查询man手册找到对应的用户登录加载文件)
-  * 在`.bash_logout`中添加`bash $HOME/Command/log_monitor.sh logout`(其他shell请查询man手册找到对应的用户退出登录加载文件)
+  * 在`.bashrc` 中添加:`bash $HOME/Command/log_monitor.sh login` 
+  * 在`.bash_logout`中添加`bash $HOME/Command/log_monitor.sh logout`
+  * 其他shell请查询man手册找到对应的用户退出登录加载文件
   * 按照个人情况酌情更改脚本
 ### re_pic.sh
 * 利用正则表达式爬取指定URL的图片到指定路径
