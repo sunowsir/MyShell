@@ -1,6 +1,6 @@
 #!/bin/bash
 
-disk_info=`df -m | grep "^/dev/" | awk -v ntime=$(date +"%Y-%m-%d__%H:%M:%S") '
+df -m | grep "^/dev/" | awk -v ntime=$(date +"%Y-%m-%d__%H:%M:%S") '
 BEGIN{
     num = 0; 
     unum = 0; 
@@ -13,7 +13,6 @@ BEGIN{
     printf("%s 1 %s %sM %sM %s\n", ntime, $6, $2, $4, $5);
 } 
 END{
-    printf("%s 0 disk %dM %dM %.2f%%", ntime, num, hnum, unum / num * 100);
-}'`
+    printf("%s 0 disk %dM %dM %.2f%%\n", ntime, num, hnum, unum / num * 100);
+}'
 
-echo "$disk_info"
