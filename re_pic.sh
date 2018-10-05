@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 if [[ $1 == '--help' ]]; then 
     echo "you need install wget and curl before use the script. "
     echo 
@@ -25,10 +24,8 @@ nowpath=$(cd $(dirname "$0") && pwd)
 
 cd ${nowpath}
 
-echo "> source:${source_url}"
-echo "> Getting information."
+echo -e "\033[1;32msource:${source_url}\033[0m"
 echo
-echo '```'
 
 # if don't hava the file ,touch the file.
 if [[ ! -f web_code ]];then
@@ -36,12 +33,7 @@ if [[ ! -f web_code ]];then
 fi
 
 # Get the web page code and save in web_code.
-curl --connect-timeout <${5}>  ${source_url} 1> ./web_code 
-
-echo '```'
-echo 
-echo "Start Download:" 
-echo 
+curl ${source_url} 1> ./web_code 2> /dev/null
 
 wait
 
@@ -53,48 +45,32 @@ if [[ "x"${search_name} == "x" ]];then
     search_name='**'
 fi
 
-# Get download images url.
-urls=$(cat ./web_code | grep -Eo '<img\s*[^>]*' | tr -s '"' '\n' | grep -Eo '((/\S*)+\.(\w\w\w))|(^http\S+)|(^\/\/)' | sed 's/http://g' | sed 's/^https://g' | sed 's/^\/\///g' | grep "${suffix}$"  | grep "${search_name}"  | sort -u)
-
+# Get download all images url.
+urls=$(cat ./web_code | grep -Eo '<img\s*[^>]*' | tr -s '"' '\n' | tr -s "'" "\n" | grep -Eo '(\w*:)*(\/)*(\/\S*)+' | grep "${suffix}$"  | grep "${search_name}"  | sort -u)
 # Download images.
+
 for img_url in `echo "${urls}" | tr -s " " "\n"`
 do
 
-    img_url=$(echo "${img_url}" | sed 's/\<https//g')
-    img_url=$(echo "${img_url}" | sed 's/\<http//g')
-    if [[ $(echo "${img_url}" | grep "^:") ]];
-    then
-        img_url=$(echo "${img_url}" | sed 's/://g')
-    fi
-
-    img_url=$(echo "${img_url}" | sed 's/\/\/\<//g')
-
-    if [[ "x"$(echo "${source_url}" | grep "bing") != "x" ]];then
-
-        img_url="cn.bing.com/${img_url}"
-    fi
-
-    if [[ "x"$(echo "${img_url}" | grep "^https:") == "x" ]];then
-        img_url="https://${img_url}"
-    fi
-
     img_name=$(basename ${img_url})
     
-    if [[ $(ls -a ${save_path} | grep -w ${img_name}) == $img_name ]];then
-        echo "Duplicate name, spip."
-        echo 
+    # Skip repeating pictures.
+    if [[ $(ls -a ${save_path} | grep -w ${img_name}) == $img_name ]];
+    then
+        echo -e "\033[1;31mDuplicate name, spip.\033[0m"
         continue
     fi
-    wget -P ${save_path} ${img_url} 1> /dev/null
+    
+    # Download image from ${img_url}
+    wget -c -nv -l 0 -t 5 -P ${save_path} ${img_url} 
 
     wait
-    echo
 
 done
 
-echo 
+echo
 echo "Completed."
-echo 
+echo
 
 # rm -rf ./web_code
 
