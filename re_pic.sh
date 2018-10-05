@@ -24,9 +24,6 @@ nowpath=$(cd $(dirname "$0") && pwd)
 
 cd ${nowpath}
 
-echo -e "\033[1;32msource:${source_url}\033[0m"
-echo
-
 # if don't hava the file ,touch the file.
 if [[ ! -f web_code ]];then
     touch web_code
@@ -49,6 +46,12 @@ fi
 urls=$(cat ./web_code | grep -Eo '<img\s*[^>]*' | tr -s '"' '\n' | tr -s "'" "\n" | grep -Eo '(\w*:)*(\/)*(\/\S*)+' | grep "${suffix}$"  | grep "${search_name}"  | sort -u)
 # Download images.
 
+img_nums=$(echo "${urls}" | wc -l)
+
+echo
+echo -e "\033[1;33mSource : \033[1;34m${source_url}\033[0m"
+echo -e "\033[1;33mTotal  : \033[1;34m${img_nums}\033[0m"
+
 for img_url in `echo "${urls}" | tr -s " " "\n"`
 do
 
@@ -57,20 +60,22 @@ do
     # Skip repeating pictures.
     if [[ $(ls -a ${save_path} | grep -w ${img_name}) == $img_name ]];
     then
-        echo -e "\033[1;31mDuplicate name, spip.\033[0m"
+        nowtime=$(date +"%Y-%m-%d %H:%M:%S")
+        echo -e "\033[1;31m${nowtime} File already exists.\033[0m"
         continue
     fi
     
     # Download image from ${img_url}
-    wget -c -nv -l 0 -t 5 -P ${save_path} ${img_url} 
+    echo -e -n "\033[1;32m"
+    wget -nv -l 0 -t 5 -P ${save_path} ${img_url} 
+    echo -e -n "\033[0m"
 
     wait
 
 done
 
-echo
-echo "Completed."
-echo
+nowtime=$(date +"%Y-%m-%d %H:%M:%S")
+echo -e "${nowtime} Done."
 
 # rm -rf ./web_code
 
