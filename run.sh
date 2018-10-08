@@ -1,128 +1,105 @@
 #!/bin/bash
-source $HOME/.bashrc
+#===============================================================
+#	File Name:    run.sh
+#	Author:       sunowsir
+#	Mail:         sunowsir@protonmail.com
+#	Created Time: 2018年10月08日 星期一 19时45分26秒
+#===============================================================
 
-num=0
-useshells="bash"
-useweb="chromium"
-judgeshow=0
-tarpath=`pwd`
-compath="$HOME/Command"
+if [[ $# -eq 0 ]];
+then
+    exit 0
+fi
+
+if [[ ! -e ./.RUN__STDERROR.info ]];
+then
+    touch ./.RUN__STDERROR.info
+fi
+
+per_nums=0
+run_file="a.out"
+out_time_info=0
 
 for arg in $@
 do
+    ((per_nums++))
+    
+    if [[ ${arg} == "-t" || ${arg} == "--time" ]];
+    then
+        out_time_info=1
+        continue
+    fi
 
-    parameter[$num]=$arg
-    ((num++))
+    if [[ ${arg} == "-o" ]];
+    then
+        ((per_nums++))
+        run_file=${arg}
+        continue
+    fi
 
+    # Get file name of need run code.
+    if [[ ${per_nums} -eq $# ]];
+    then
+        need_code_file=${arg}
+        break;
+    fi
+
+    other_per="${other_per} ${arg}"
 done
 
-for((i=0;i<$num;i++));
-do
+# Get suffix of need run code file name.
+ncf_suffix=$(echo "${need_code_file}" | awk -F '.' '{
+printf("%s", $(NR + 1));
+}')
 
-    case ${parameter[$i]} in
-
-        "-p" | "--path")
-            ((i++))
-            tarpath=${parameter[$i]}
-        ;;
-        "-t" | "--time")
-            judgeshow=1
-        ;;
-        "-u" | "--use")
-            ((i++))
-            useshells=${parameter[$i]}
-        ;;
-        "-w" | "--web")
-            ((i++))
-            useweb=${parameter[$i]}
-        ;;
-        "-help" | "--help")
-            echo "Note: This script only works for single file code running a no link process."
-            echo "run [-p/--path + ... , -t/--time , -u/--use + ... , -w/--web + ... , -help/--help] <filename>"
-            echo "-p / --path :    run the file under the development path."
-            echo "-t / --time :    display runtime infomation."
-            echo "-w / --web :     when run an HTML code, open it with the specified browser."
-            echo "-u / -use :      when run an linux script code, open it with the specified shell script language"
-            echo "- help / --help: Git help "
-            exit;
-        ;;
-        *)
-            fname=${parameter[$i]}
-        ;;
-
-    esac
-
-done
-
-if [[ $num == 0 ]];then
-    exit;
+# Add file path .
+if [[ $(echo "${need_code_file}" | cut -d '/' -f1) == $(echo "${need_code_file}" | cut -d '/' -f2 )  ]];
+then
+    need_code_file="./${need_code_file}"
 fi
 
-cd $tarpath
-
-search=`ls -al | grep "$fname"`
-
-if [[ "x"$search == "x" ]];then
-    echo $fname"文件不存在"
-    $useshells $compath/run.sh -help
-    exit;
+if [[ "x${other_per}" == "x" && ${ncf_suffix} == "c" ]];
+then
+    other_per="-std=c11 -g -Wall"
+elif [[ "x${other_per}" == "x" && ${ncf_suffix} == "cpp" ]];
+then
+    other_per="-std=c++11 -g -Wall"
 fi
 
-chmod +x $fname
-
-
-suffix=`echo $fname | cut -d "." -f2`
-
-case $suffix in
-
+case ${ncf_suffix} in
     "c")
-        echo "Compiling ... "
-        gcc -Wall $fname
-        echo "------------------"
-        (time ./a.out) 2> $compath/run.info
-        echo "------------------"
+        comp_comd="gcc ${other_per} ${need_code_file}"
+        run_comd="./${run_file}"
     ;;
     "cpp")
-        echo "Compiling ... "
-        g++ -std=c++11 -Wall $fname 
-        echo "------------------"
-        (time ./a.out) 2> $compath/run.info
-        echo "------------------"
+        comp_comd="g++ ${other_per} ${need_code_file}"
+        run_comd="./${run_file}"
     ;;
     "py")
-        (time python2.7 $fname) 2> $compath/run.info
-        echo "------------------"
+        run_comd="python3 ${other_per} ${need_code_file}"
     ;;
     "sh")
-        (time $useshells  ./$fname) 2> $compath/run.info
+        run_comd="bash ${other_per} ${need_code_file}"
     ;;
-    "html")
-        $useweb $fname
-    ;;
-    "*")
-        echo "暂时无法识别"$suffix"类型文件"
-        exit 1
-    ;;
-
 esac
 
-lines=`cat $compath/run.info | wc -l`
-((lines-=-4))
-line=0
+echo "---------"
 
-cat $compath/run.info | while read oneline
-do 
-
-    if [[ "$line" -lt "$lines" ]];then
-        echo $oneline
-    fi
-    ((line++))
-
-done
-
-#处理time信息
-
-if [[ $judgeshow == 1 ]];then
-    tail -3 $compath/run.info 
+if [[ "x${comp_comd}" != "x" ]];
+then
+    eval ${comp_comd}
 fi
 
+if [[ ${out_time_info} == 1 ]];
+then
+    run_comd="time ${run_comd}"
+fi
+
+run_comd="(${run_comd}) 2> ./.RUN__STDERROR.info"
+
+eval ${run_comd}
+
+echo "---------"
+cat ./.RUN__STDERROR.info 
+
+rm -rf ./.RUN__STDERROR.info
