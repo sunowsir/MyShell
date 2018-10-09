@@ -83,12 +83,15 @@ case ${ncf_suffix} in
     ;;
 esac
 
-echo "---------"
+comp_comd="(${comp_comd}) 2> ./.RUN__STDERROR.info"
 
 if [[ "x${comp_comd}" != "x" ]];
 then
     eval ${comp_comd}
 fi
+
+eval "grep -v '^$' ./.RUN__STDERROR.info"
+echo "---------"
 
 if [[ ${out_time_info} == 1 ]];
 then
@@ -100,6 +103,6 @@ run_comd="(${run_comd}) 2> ./.RUN__STDERROR.info"
 eval ${run_comd}
 
 echo "---------"
-cat ./.RUN__STDERROR.info 
+eval "grep -v '^$' ./.RUN__STDERROR.info"
 
 rm -rf ./.RUN__STDERROR.info
