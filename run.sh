@@ -60,10 +60,10 @@ fi
 
 if [[ "x${other_per}" == "x" && ${ncf_suffix} == "c" ]];
 then
-    other_per="-std=c11 -g -Wall"
+    other_per="-std=c11 -g -Wall "
 elif [[ "x${other_per}" == "x" && ${ncf_suffix} == "cpp" ]];
 then
-    other_per="-std=c++11 -g -Wall"
+    other_per="-std=c++11 -g -Wall "
 fi
 
 case ${ncf_suffix} in
@@ -88,6 +88,7 @@ comp_comd="(${comp_comd}) 2> ./.RUN__STDERROR.info"
 if [[ "x${comp_comd}" != "x" ]];
 then
     eval ${comp_comd}
+    chmod +x ${run_file}
 fi
 
 eval "grep -v '^$' ./.RUN__STDERROR.info"
