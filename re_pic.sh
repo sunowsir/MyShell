@@ -126,7 +126,7 @@ do
     # Skip repeating pictures.
     if [[ $(ls ${save_path} | grep -w ${img_name}) == ${img_name} ]];then
         nowtime=$(date +"%Y-%m-%d %H:%M:%S")
-        echo -e "\033[1;31m${nowtime} The file already exists : ${save_path:0:20}.../${img_name:0:20}\033[0m"
+        echo -e "\033[1;31m${nowtime} The file already exists : ${save_path:0:20}.../...${img_name:(-20)}\033[0m"
         continue
     fi
 
@@ -143,7 +143,7 @@ do
     wait
     
     #echo "path : ${save_path}${img_name}"
-    echo "$(date +"%Y-%m-%d %H:%M:%S") ${img_url:0:25}... -> ${save_path:0:20}.../${img_name}"
+    echo "$(date +"%Y-%m-%d %H:%M:%S") ${img_url:0:25}... -> ${save_path:0:20}.../...${img_name:(-20)}"
     
     echo -e -n "\033[0m"
     ((img_nums++))
