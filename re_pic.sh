@@ -111,10 +111,11 @@ do
     # If there is no agreement in picture URL, add the agreement for hte URL's web address.
     if [[ "x$(echo "${img_url}" | grep -Eo 'http\S*')" == "x" ]];then
         img_url=$(echo "${img_url}" | sed 's/^\/*//g')
-
         # Add the user specified missing path to picture URL.
         if [[ "x${add_word}" != "x" ]];then
             img_url="${source_protocol}//${add_word}${img_url}"
+        else 
+            img_url="${source_protocol}//${img_url}"
         fi
     fi
 
@@ -142,8 +143,8 @@ do
     curl --connect-timeout 5 -# -o ${save_path}${img_name} ${img_url}
     wait
     
-    #echo "path : ${save_path}${img_name}"
-    echo "$(date +"%Y-%m-%d %H:%M:%S") ${img_url:0:25}... -> ${save_path:0:20}.../...${img_name:(-20)}"
+    path_name=${save_path}${img_name}
+    echo "$(date +"%Y-%m-%d %H:%M:%S") ${img_url:0:25}... -> ...${path_name:(-25)}"
     
     echo -e -n "\033[0m"
     ((img_nums++))
