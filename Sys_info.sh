@@ -12,8 +12,6 @@ run_and_load=`uptime -p | tr -s " " "\n" | awk '{printf("_%s", $1)}'``cat /proc/
 # 负载信息
 #load_info=`uptime | awk '{printf ("%s %s %s", $(NF - 2), $(NF - 1), $NF)}' | tr -s "," " "`
 
-
-
 disk_total=`df -m | grep "^/dev/" | awk 'BEGIN{t_num=0; u_num = 0}{if (NR > 1) {t_num = t_num + $2; u_num += $3 }}END{printf ("%d:%d", t_num, u_num)}'`
 disk_used=`echo $disk_total | cut -d ":" -f2`
 disk_total=`echo $disk_total | cut -d ":" -f1`
@@ -42,7 +40,6 @@ else
 fi
 
 # 内存报警级别
-
 
 if [[ $per_memo -ge 0 && $per_memo -le 70  ]];then
     memo_warn="normal"
