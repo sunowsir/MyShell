@@ -84,12 +84,12 @@ if [[ ! -f ./.re_pic.get.webcode ]];then
 fi
 
 # Get the web page code and save in .re_pic.get.webcode.
-curl --connect-timeout 5 ${source_url} -L -o ./.re_pic.get.webcode --silent
+curl --retry 3 --connect-timeout 15 ${source_url} -L -o ./.re_pic.get.webcode --silent
 
 wait
 
 # Get download all images url.
-urls=$(cat ./.re_pic.get.webcode | grep -Eo '<img\s*[^>]*' | tr -s '"' '\n' | tr -s "'" "\n" | grep -Eo '(\w*:)*(\/)*(\/\S+)+' | grep "${suffix}"  | grep "${search_name}"  | sort -u)
+urls=$(cat ./.re_pic.get.webcode | grep -Eo '<img\s*[^>]*' | tr -s '"' '\n' | tr -s "'" "\n" | grep -Eo '(\w*:)*(\/)*(\/\S+)+' | grep "${suffix}" | sort -u)
 # Download images.
 
 img_nums=0
@@ -99,7 +99,7 @@ echo -e "\033[1;33mSource : \033[1;34m${source_url}\033[0m"
 
 # Print informathon of get web source code failed.
 if [[ "x$(cat ./.re_pic.get.webcode 2> /dev/null)" == "x" ]];then 
-    echo -e "\033[1;31m$(date +"%Y-%m-%d %H:%M:%S") Failed to get page source code(connection timeout within five seconds).\033[0m"
+    echo -e "\033[1;31m$(date +"%Y-%m-%d %H:%M:%S") Failed to get page source code(connection timeout within fifteen seconds).\033[0m"
 fi
 
 for img_url in `echo "${urls}" | tr -s " " "\n"`
@@ -107,6 +107,10 @@ do
 
     # Get the image name.
     img_name=$(echo "${img_url}" | grep -Eo '\S*\.\w\w\w' | xargs -I {} basename {})
+
+    if [[ "x$(echo "${img_name}" | grep "${search_name}")" == "x" ]];then
+        continue;
+    fi
 
     # If there is no agreement in picture URL, add the agreement for hte URL's web address.
     if [[ "x$(echo "${img_url}" | grep -Eo 'http\S*')" == "x" ]];then
@@ -123,13 +127,6 @@ do
     if [[ "x$(echo "${img_name}" | cut -d '.' -f 2)" == "x" ]];then
         img_name="${img_name}.jpg"
     fi
-    
-    # Skip repeating pictures.
-    if [[ $(ls ${save_path} | grep -w ${img_name}) == ${img_name} ]];then
-        nowtime=$(date +"%Y-%m-%d %H:%M:%S")
-        echo -e "\033[1;31m${nowtime} The file already exists : ${save_path:0:20}.../...${img_name:(-20)}\033[0m"
-        continue
-    fi
 
     # add color for print information.
     echo -e -n "\033[1;32m"
@@ -137,14 +134,24 @@ do
     if [[ "x$(echo "${save_path}" | grep -Eo '\/$')" == "x" ]];then
         save_path="${save_path}/"
     fi
-
-    # Download image from ${img_url}
-    # wget -nv -nc -l 0 --timeout=5 -t 2 -O ${img_name} -P ${save_path} ${img_url} > /dev/null 2>&1
-    curl --connect-timeout 5 -# -o ${save_path}${img_name} ${img_url}
-    wait
     
     path_name=${save_path}${img_name}
-    echo "$(date +"%Y-%m-%d %H:%M:%S") ${img_url:0:25}... -> ...${path_name:(-25)}"
+    # Skip repeating pictures.
+    if [[ $(ls ${save_path} | grep -w ${img_name}) == ${img_name} ]];then
+        nowtime=$(date +"%Y-%m-%d %H:%M:%S")
+        echo -e "\033[1;31m${nowtime} The file already exists : ${path_name:(-30)}\033[0m"
+        continue
+    fi
+
+    # echo "url : ${img_url}"
+    # echo "path : ${save_path}${img_name}"
+    # Download image from ${img_url}
+    wget -c -nv -nc --tries=2 --output-document=${save_path}${img_name} ${img_url} > /dev/null 2>&1
+
+    # curl --retry 3 --connect-timeout 15 -# -o ${save_path}${img_name} ${img_url}
+
+    wait
+    echo "$(date +"%Y-%m-%d %H:%M:%S") ${img_url:0:30}... -> ...${path_name:(-30)}"
     
     echo -e -n "\033[0m"
     ((img_nums++))
