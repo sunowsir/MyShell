@@ -51,7 +51,7 @@ function Down_img() {
     
     # Try again, if this image download failed. # 
     try_num=5
-    while [[ ${try_num} ]];
+    while [[ $((try_num--)) ]];
     do
         Judge_img ${1} ${2}
         if [[ ${?} -ne 0 ]];then 
@@ -61,7 +61,6 @@ function Down_img() {
         else 
             break
         fi
-        ((try_num--))
     done
 
     # curl --retry 3 --connect-timeout 15 -# -o ${save_path}${img_name} ${img_url}
