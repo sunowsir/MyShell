@@ -34,4 +34,7 @@
 * 单文件代码编译运行脚本。
 ### wall.sh
 * 给其他登录用户发送消息
+
+---
+
 * [GPLv3](https://github.com/justforlxz/deepin-dreamscene/blob/master/LICENSE)
