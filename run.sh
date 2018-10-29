@@ -11,9 +11,9 @@ then
     exit 0
 fi
 
-if [[ ! -e ./.RUN__STDERROR.info ]];
+if [[ ! -e ./.StdERROR.info.run ]];
 then
-    touch ./.RUN__STDERROR.info
+    touch ./.StdERROR.info.run
 fi
 
 per_nums=0
@@ -49,7 +49,7 @@ done
 
 # Get suffix of need run code file name.
 ncf_suffix=$(echo "${need_code_file}" | awk -F '.' '{
-printf("%s", $(NR + 1));
+    printf("%s", $(NR + 1));
 }')
 
 # Add file path .
@@ -81,17 +81,21 @@ case ${ncf_suffix} in
     "sh")
         run_comd="bash ${other_per} ${need_code_file}"
     ;;
+    *)
+        echo -e "\033[1;31mSorry, this language \"${ncf_suffix}\" is not supported.\033[0m"
+        exit 1
+    ;;
 esac
-
-comp_comd="(${comp_comd}) 2> ./.RUN__STDERROR.info"
 
 if [[ "x${comp_comd}" != "x" ]];
 then
+    echo -e "\033[1;32m\[Compiling.\]\033[0m"
+    comp_comd="${comp_comd} 2> ./.StdERROR.info.run"
     eval ${comp_comd}
     chmod +x ${run_file}
 fi
 
-eval "grep -v '^$' ./.RUN__STDERROR.info"
+eval "grep -v '^$' ./.StdERROR.info.run"
 echo "---------"
 
 if [[ ${out_time_info} == 1 ]];
@@ -99,11 +103,12 @@ then
     run_comd="time ${run_comd}"
 fi
 
-run_comd="(${run_comd}) 2> ./.RUN__STDERROR.info"
-
+run_comd="(${run_comd}) 2> ./.StdERROR.info.run"
 eval ${run_comd}
 
 echo "---------"
-eval "grep -v '^$' ./.RUN__STDERROR.info"
 
-rm -rf ./.RUN__STDERROR.info
+stderror=$(grep -v '^$' ./.StdERROR.info.run)
+echo -e "\e[1;31${stderror}m\3[0m"
+
+rm -rf ./.StdERROR.info.run
