@@ -2,12 +2,12 @@
 # coding=utf-8
 
 import sys
-import time
+# import time
 import smtplib
 from email.header import Header
 from email.mime.text import MIMEText
 
-print "Please wait..."
+print ("Please wait...")
 
 mail_host = 'smtp.xxx.com' # smtp 服务器
 mail_user = 'xxx@xxx.com' # 发送者邮箱
@@ -56,7 +56,7 @@ try:
     smtpObj.connect(mail_host, 25) # 25：smtp 服务器端口
     smtpObj.login(mail_user, mail_pass)
     smtpObj.sendmail(sender, receiver, message.as_string())
-    print ""
+    print ("")
 
 except smtplib.SMTPException:
-    print ""
+    print ("")

@@ -252,7 +252,7 @@ function main() {
         # Skip repeating pictures. # 
         Judge_img ${save_path} ${img_name}
         if [[ ${?} -eq 0 ]];then
-            echo -e "\033[1;33mWARNING\033[0m : The image \"${img_name}\" already exists"
+            echo -e "\033[1;33mWARNING\033[0m : The image \"${img_name:0:25}\" already exists"
             ((total_num++))
             ((failed_num++))
             continue
@@ -265,7 +265,7 @@ function main() {
     
         if [[ ${?} -eq 0 ]];then
             ((success_num++))
-            echo -e "\033[1;32m${img_url:0:30}... -> ${save_path:0:25}.../${img_name}\033[0m"
+            echo -e "\033[1;32m${img_url:0:30}... -> ${save_path:0:25}.../...${img_name:0:25}\033[0m"
         else
             ((failed_num++))
             echo -e "\033[31;mERROR\033[0m : The image \"${path_name:(-30)}\" download failed."
