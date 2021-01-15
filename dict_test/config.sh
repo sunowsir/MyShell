@@ -17,7 +17,7 @@ G_server_svn_csv_config_path="./config"
 # 本地程序使用的csv配置表路径
 G_server_local_csv_config_path="./local/config"
 
-# 映射每个程序用的csv配置文件所在的config配置目录下的路径
+# 映射每个程序用的csv配置文件在config下的位置
 G_file_pos["Monster.csv"]="/Monster"
 G_file_pos["wave.csv"]="/new"
 
