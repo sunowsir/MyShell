@@ -6,9 +6,10 @@
 #	* Github   : github.com/sunowsir
 #	* Creation : 2021年01月16日 星期六 00时03分48秒
 
-Now_Dir="$(pwd)"
+# shellcheck source=./config.sh
+source "./config.sh"
 
-source "${Now_Dir}/config.sh"
+Now_Dir="$(pwd)"
 
 # echo ${G_file_pos["wave.out"]}
 
@@ -22,8 +23,8 @@ function copy_excel_to_now_dir() {
     echo "copy excel file to now directory."
     for key in "${!G_excel_file[@]}"
     do
-        rm -rf "${Now_Dir}/${G_excel_file[${key}]}"
-        cp "${G_server_excel_config_path}/${G_excel_file[${key}]}" "${Now_Dir}"
+        rm -rf "${Now_Dir:?}/${G_excel_file[${key}]}"
+        cp "${G_server_excel_config_path:?}/${G_excel_file[${key}]}" "${Now_Dir:?}"
     done
 }
 
@@ -40,12 +41,12 @@ function copy_csv_to_cfg_dir() {
     for key in ${!G_file_pos[*]}
     do
         echo "${G_file_pos[${key}]}"
-        local csv_cfg_file="${Now_Dir}/${key}"
+        local csv_cfg_file="${Now_Dir:?}/${key}"
     
         if [[ -f "${csv_cfg_file}" ]];
         then
-            cp "${csv_cfg_file}" "${G_server_svn_csv_config_path}/${G_file_pos[${key}]}"
-            cp "${csv_cfg_file}" "${G_server_local_csv_config_path}/${G_file_pos[${key}]}"
+            cp "${csv_cfg_file}" "${G_server_svn_csv_config_path:?}/${G_file_pos[${key}]}"
+            cp "${csv_cfg_file}" "${G_server_local_csv_config_path:?}/${G_file_pos[${key}]}"
         fi
     
     done
