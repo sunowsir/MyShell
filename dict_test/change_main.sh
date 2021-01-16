@@ -40,7 +40,6 @@ function copy_csv_to_cfg_dir() {
     
     for key in ${!G_file_pos[*]}
     do
-        echo "${G_file_pos[${key}]}"
         local csv_cfg_file="${Now_Dir:?}/${key}"
     
         if [[ -f "${csv_cfg_file}" ]];
