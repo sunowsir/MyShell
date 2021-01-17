@@ -6,7 +6,7 @@
 #	* Github   : github.com/sunowsir
 #	* Creation : 2021年01月15日 星期五 23时57分21秒
 
-# 若您在windows上使用，盘符请修改为例如: /c、/d这样, 
+# 若您在windows上使用，拷贝和修改路径，请将盘符请修改为例如: /c、/d这样, 
 # 路径分隔符请使用如下样式linux分隔符; 
 
 declare -A G_file_pos
@@ -28,16 +28,3 @@ G_file_pos["wave.csv"]="/new"
 G_excel_file[0]="Monster.in"
 G_excel_file[1]="wave.in"
 
-
-### check config path.
-
-function Check_svn_excel() {
-    if [[ ! -d ${G_server_excel_config_path} ]];
-    then
-        echo "${G_server_excel_config_path} is not assigned."
-        exit 1;
-    fi
-    return "${?}"
-}
-
-# todo
