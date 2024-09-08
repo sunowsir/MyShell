@@ -8,15 +8,15 @@
 
 set -x
 
-sudo podman login docker.io
+sudo podman login docker.io || exit
 
 sudo podman rmi docker.io/sunowsir/immortalwrt-23.05-build:latest
 sudo podman rmi localhost/immortalwrt-23.05-build
 
-sudo podman commit 1dad52d9c598 immortalwrt-23.05-build
-sudo podman tag immortalwrt-23.05-build docker.io/sunowsir/immortalwrt-23.05-build:latest
+sudo podman commit 1dad52d9c598 immortalwrt-23.05-build || exit
+sudo podman tag immortalwrt-23.05-build docker.io/sunowsir/immortalwrt-23.05-build:latest || exit
 
-sudo podman push docker.io/sunowsir/immortalwrt-23.05-build:latest
+sudo podman push docker.io/sunowsir/immortalwrt-23.05-build:latest 
 
 
 set +x
