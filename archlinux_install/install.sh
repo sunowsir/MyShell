@@ -95,6 +95,8 @@ function install_end() {
 }
 
 function main() {
+     timedatectl set-ntp true
+
     disk_setup || exit $?
     base_pkg_install || exit $?
     base_config_setup || exit $?
