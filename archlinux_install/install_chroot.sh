@@ -43,8 +43,12 @@ function time_zone_setup() {
 }
 
 function base_pkg_install() {
-
     echo "Install base package"
+
+    sed -i 's/^#[\ ]*Color/Color/g' /etc/pacman.conf
+    sed -i 's/^#[\ ]*CheckSpace/CheckSpace/g' /etc/pacman.conf
+    sed -i 's/^#[\ ]*VerbosePkgLists/VerbosePkgLists/g' /etc/pacman.conf
+
     pacman -Syyu --noconfirm 
     pacman -Sy --noconfirm pacman-mirrorlist
 

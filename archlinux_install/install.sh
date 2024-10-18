@@ -41,7 +41,35 @@ function disk_setup() {
 function base_pkg_install() {
     # Install base system
     echo "Installing base system..."
-    pacman -Sy --noconfirm pacman-mirrorlist
+
+    echo '##' > /etc/pacman.d/mirrorlist
+    echo '## Arch Linux repository mirrorlist' >> /etc/pacman.d/mirr 
+    echo '## Generated on 2024-10-18' >> /etc/pacman.d/mirr  
+    echo '##' >> /etc/pacman.d/mirr  
+    echo '' >> /etc/pacman.d/mirr    
+    echo '## China' >> /etc/pacman.d/mirr    
+    echo 'Server = https://mirrors.tuna.tsinghua.edu.cn/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirr  
+    echo 'Server = https://mirrors.ustc.edu.cn/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirr   
+    echo 'Server = https://mirrors.aliyun.com/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirr    
+    echo 'Server = https://mirrors.bfsu.edu.cn/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirr   
+    echo 'Server = https://mirrors.cqu.edu.cn/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirr    
+    echo 'Server = https://mirrors.hit.edu.cn/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirr    
+    echo 'Server = https://mirrors.hust.edu.cn/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirr   
+    echo 'Server = https://mirrors.jcut.edu.cn/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirr   
+    echo 'Server = https://mirrors.jlu.edu.cn/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirr    
+    echo 'Server = https://mirrors.jxust.edu.cn/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirr  
+    echo 'Server = https://mirrors.neusoft.edu.cn/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirr    
+    echo 'Server = https://mirrors.nju.edu.cn/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirr    
+    echo 'Server = https://mirrors.njupt.edu.cn/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirr  
+    echo 'Server = https://mirror.nyist.edu.cn/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirr   
+    echo 'Server = https://mirrors.qlu.edu.cn/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirr    
+    echo 'Server = https://mirrors.qvq.net.cn/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirr    
+    echo 'Server = https://mirror.redrock.team/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirr   
+    echo 'Server = https://mirrors.shanghaitech.edu.cn/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirr   
+    echo 'Server = https://mirrors.sjtug.sjtu.edu.cn/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirr 
+    echo 'Server = https://mirrors.wsyu.edu.cn/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirr   
+    echo 'Server = https://mirrors.xjtu.edu.cn/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirr   
+
     pacstrap -K /mnt base linux linux-firmware base-devel
 
     return $?
