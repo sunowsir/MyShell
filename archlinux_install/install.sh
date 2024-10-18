@@ -57,7 +57,7 @@ function base_config_setup() {
     echo "Configuring localization..."
     sed -i 's/^#[\ ]*en_US.UTF-8\ UTF-8/en_US.UTF-8\ UTF-8/g' /mnt/etc/locale.gen
     sed -i 's/^#[\ ]*zh_CN.UTF-8\ UTF-8/zh_CN.UTF-8\ UTF-8/g' /mnt/etc/locale.gen
-    echo "LANG=en_US.UTF-8" > /mnt/etc/locale.conf
+    echo "LANG=zh_CN.UTF-8" > /mnt/etc/locale.conf
 
     # Set hostname
     echo "Setting hostname..."

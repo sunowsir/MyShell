@@ -55,7 +55,18 @@ function base_pkg_install() {
     pacman-key --lsign-key "farseerfc@archlinux.org"
     pacman -Sy --noconfirm archlinuxcn-keyring
 
-    pacman -S --noconfirm sudo neovim zsh git curl wget man-db efibootmgr intel-ucode patch paru networkmanager openssh dhcpcd cockpit cockpit-files cockpit-machines cockpit-packagekit cockpit-podman cockpit-storaged qemu libvirt ovmf virt-manager virt-viewer dnsmasq vde2 bridge-utils openbsd-netcat podman podman-compose
+    pacman -S --noconfirm sudo neovim zsh git curl wget man-db efibootmgr intel-ucode patch paru networkmanager openssh dhcpcd 
+    pacman -S --noconfirm cockpit cockpit-files cockpit-machines cockpit-packagekit cockpit-podman cockpit-storaged 
+    pacman -S --noconfirm qemu libvirt ovmf virt-manager virt-viewer dnsmasq vde2 bridge-utils openbsd-netcat podman podman-compose 
+    pacman -S --noconfirm wayland xorg-xwayland 
+    pacman -S --noconfirm sddm plasma kde-applications 
+    pacman -S --noconfirm kdegraphics-thumbnailers ffmpegthumbs print-manager cups kdenetwork-filesharing powerdevil power-profiles-daemon
+    pacman -S --noconfirm sonnet sddm-kcm plymouth-kcm kde-pim akonadi kdepim-addons sshfs kscreen colord-kde kio-admin kio-extras kio-fuse kio-zeroconf kde-gtk-config 
+    pacman -S --noconfirm libappindicator-gtk2 libappindicator-gtk3 alsa-utils plasma-pa 
+
+    pacman -S --noconfirm fcitx5-im fcitx5-chinese-addons fcitx5-qt fcitx5-gtk fcitx5-lua
+    echo 'XMODIFIERS=@im=fcitx' >> /etc/environment
+
 
     usermod -a -G libvirt sun
 
@@ -69,6 +80,7 @@ function service_setup() {
     systemctl enable dhcpcd
     systemctl enable cockpit
     systemctl enable cockpit.socket
+    systemctl enable sddm
 
     return $?
 }
